@@ -19,12 +19,12 @@ pipeline earns credit; *"80% seemed reasonable"* does not.
 
 ## 1. Retrieved chunks contain the answer
 
-For at least 4 of my 5 test questions, the retrieved chunks include one that
-contains the answer.
+
+For at least 4 of my 5 test questions, the retrieved chunks include one that contains the answer.
 
 **Why this target:**
-<!-- e.g. "One of my questions is about a topic only two documents mention, so
-     I expect that one to be hard." -->
+
+I chose 4 out of 5 because I expect the retrieval system to find useful information for most of my test questions, but one question may be harder if the answer is mentioned only briefly or appears in a less closely related chunk.
 
 ---
 
@@ -33,8 +33,8 @@ contains the answer.
 Every answer the system produces names at least one source document.
 
 **Why this target:**
-<!-- Why all five and not four? What about your setup makes that achievable —
-     or what would have to go wrong for it not to be? -->
+
+I chose every answer because the system is supposed to be grounded in the documents it retrieves. If an answer does not name a source, there is no clear way for the user to verify where the information came from.
 
 ---
 
@@ -52,6 +52,8 @@ in at least 4 of 5 tries.
 **Why this target:**
 <!-- What did your distances look like when you set the cutoff in Milestone 4?
      Was there a clean gap, or did the two groups overlap? -->
+
+     I chose 4 out of 5 because the relevance gate should reject most questions that are outside the corpus, although one question may still appear semantically similar to something in the documents and pass the cutoff.
 
 ---
 
@@ -73,6 +75,9 @@ in at least 4 of 5 tries.
 
 **Why this target:**
 
+At least 4 of 5 sampled chunks read as a complete thought, with no sentence or word cut off at either the beginning or end.
+
+When I sampled 5 chunks using the default chunker, all 5 had text cut off somewhere — either the beginning, the end, or both. Some ended mid-word, such as "mino" and "grou," while another began with "irts," clearly the tail end of "outskirts." Since the current fixed-size splitting is breaking sentences and words, I expect an improved chunking strategy to preserve sentence boundaries in most cases. I chose 4 out of 5 as a measurable target for producing readable, self-contained chunks.
 
 
 ---
@@ -91,7 +96,9 @@ in at least 4 of 5 tries.
 
 **Why this target:**
 
+When the correct source document is included in the retrieved chunks, the system gives an answer containing the expected fact in at least 4 of 5 test questions instead of saying it does not have enough information.
 
+In my initial testing, the Brightwater question retrieved the correct source document, but the final answer still said it did not have enough information. I chose 4 out of 5 because I want the system to use relevant retrieved information successfully most of the time, while still allowing for one difficult case.
 
 ---
 
