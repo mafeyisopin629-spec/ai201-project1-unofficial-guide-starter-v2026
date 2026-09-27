@@ -131,14 +131,32 @@ and Halden Bay. The Kestrelf
 ```
 ```
 
-**My relevance cutoff:**
+## Sample Answer
 
-<!-- The number you set in config.py, and how you got there.
+**Question:** How many pubs and cafés are there in Kestrelford?
 
-     You ran five questions your corpus covers and the five in OUT_OF_SCOPE
-     that it clearly doesn't, and wrote down the best distance for each. What
-     did those two groups look like? Where was the gap? Put the actual numbers
-     here — the table below wants all ten rows.
+**Answer:** There are four pubs and two cafés in Kestrelford (`guide_kestrelford.md`).
+
+**Sources retrieved:** `guide_eating.md`, `guide_elder_ness.md`, `guide_kestrelford.md`
+
+**Best distance:** `0.470`
+
+**Relevance cutoff:** `0.60`
+
+For my five in-scope test questions, the best retrieval distances ranged from `0.3657` to `0.4740`.
+
+For my five out-of-scope questions, the best distances ranged from `0.8190` to `1.0180`.
+
+There was a clear gap between the two groups, so I kept the relevance cutoff at `0.60`.
+
+
+**Relevance cutoff:** `0.60`
+
+For my five in-scope test questions, the best retrieval distances ranged from `0.3657` to `0.4740`.
+
+For my five out-of-scope questions, the best distances ranged from `0.8190` to `1.0180`.
+
+There was a clear gap between the two groups, so I kept the relevance cutoff at `0.60`. This allows the system to answer questions that are well supported by the corpus while refusing questions that are clearly unrelated.
 
      Milestone 4. -->
 
