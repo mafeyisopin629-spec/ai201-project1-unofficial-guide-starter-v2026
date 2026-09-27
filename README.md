@@ -27,10 +27,15 @@
 
      Milestone 5. -->
 
+This project uses the `city_guides` corpus, which contains guides about towns, transportation, food, accessibility, and travel around the region. The system lets a user ask specific questions about those guides and retrieves the most relevant chunks before generating an answer. For example, it can answer questions about Kestrelford's restaurants, Brightwater dining hours, railway access, or when to visit Halden Bay. Answers are grounded in the retrieved documents and name the source used.
+
 ## Chunking Strategy
 
-**Chunk size:**
-**Overlap:**
+**Chunk size:** Up to 800 characters, while keeping whole paragraphs together.
+
+**Overlap:** 0 characters.
+
+The original chunker used fixed 800-character windows and often cut sentences and even words in half. In my first five sampled chunks, I saw endings such as "mino" and "grou" and a chunk beginning with "irts." Because the `city_guides` documents are long guides organized into paragraphs and labeled sections, I changed the chunker to group complete paragraphs until the chunk approaches the 800-character limit. After the change, the corpus went from 51 chunks to 46 chunks, and the new five sampled chunks no longer cut sentences or words in half.
 
 <!-- What about YOUR documents made you pick these numbers? Short posts and
      long sectioned guides don't want the same chunking, and "800 seemed
@@ -122,13 +127,15 @@ year-round.
 ## Driving
 
 Roads are good between the towns and poor on the approaches to both Kestrelford
-and Halden Bay. The Kestrelf
+and Halden Bay. The Kestrelford approach is single-track with passing places
+for the final eight minutes. The Halden Bay coast road is cut into the cliff
+and is slow rather than difficult.
 
-**Question:**
+Parking is the constraint rather than driving. Both Halden Bay lots fill by
+10am on summer weekends. Kestrelford's lower car park is free and involves a
+steep walk up.
 
-**Answer:**
-
-```
+## Walking and cycling
 ```
 
 ## Sample Answer
@@ -147,31 +154,13 @@ For my five in-scope test questions, the best retrieval distances ranged from `0
 
 For my five out-of-scope questions, the best distances ranged from `0.8190` to `1.0180`.
 
-There was a clear gap between the two groups, so I kept the relevance cutoff at `0.60`.
-
-
-**Relevance cutoff:** `0.60`
-
-For my five in-scope test questions, the best retrieval distances ranged from `0.3657` to `0.4740`.
-
-For my five out-of-scope questions, the best distances ranged from `0.8190` to `1.0180`.
-
 There was a clear gap between the two groups, so I kept the relevance cutoff at `0.60`. This allows the system to answer questions that are well supported by the corpus while refusing questions that are clearly unrelated.
-
-     Milestone 4. -->
-
-| Question | In corpus? | Best distance |
-|---|---|---|
-|  |  |  |
 
 ## How I Used AI
 
-<!-- Two specific moments. For each: what you asked for, what came back, and
-     what you changed about it.
+**1.** I used AI to help me pressure-test my fourth acceptance criterion after I printed five chunks from the original chunker. I showed the five samples and asked whether my criterion about complete thoughts was measurable. The AI pointed out that all five samples had text cut off at the beginning or end, so I used that evidence to set my target at 4 of 5 readable, self-contained chunks.
 
-     "I asked Claude to write the chunking function from my notes. It ignored
-     the overlap, so I added that myself" is the level of detail we're after.
-     "I used AI to help me code" is not.
+**2.** I used AI to help me work through a paragraph-based chunking strategy after the fixed-size chunker was cutting words and sentences in half. It suggested grouping complete paragraphs until the chunk approached the configured size instead of splitting strictly by character position. I added that approach to `split_documents`, reran the index and chunk samples, and verified that the output changed from 51 fallback chunks to 46 paragraph-based chunks with complete sentence boundaries.
 
      Milestone 5. -->
 
