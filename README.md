@@ -193,13 +193,20 @@ There was a clear gap between the two groups, so I kept the relevance cutoff at 
 
      Milestone 1. -->
 
+
 | Criterion | Target | Run 1 | Run 2 | Run 3 | Verdict |
 |---|---|---|---|---|---|
-| 1. Retrieved chunk contains the answer | 4 of 5 |  |  |  |  |
-| 2. Every answer names a source | 5 of 5 |  |  |  |  |
-| 3. Gate stops out-of-corpus questions | 4 of 5 |  |  |  |  |
-| 4. | | | | | |
-| 5. | | | | | |
+| 1. Retrieved chunks contain the answer | 4 of 5 | 5/5 | 5/5 | 5/5 | MET |
+| 2. Every answer names a source | 5 of 5 | 5/5 | 5/5 | 5/5 | MET |
+| 3. Gate stops out-of-corpus questions | 4 of 5 | 5/5 | 5/5 | 5/5 | MET |
+| 4. Sampled chunks read as complete thoughts | 4 of 5 | 5/5 | 5/5 | 5/5 | MET |
+| 5. Retrieved information is used in the final answer | 4 of 5 | 5/5 | 5/5 | 5/5 | MET |
+
+The before evaluation was produced by `run_eval.py::main`, with retrieval from `store.py::search` and chunks produced by `chunker.py::split_documents`.
+
+For the out-of-scope questions, the relevance gate refused 5 of 5. The best distances ranged from 0.819 to 1.018, all above the 0.60 cutoff.
+
+All five in-scope questions produced the expected facts in every run and named at least one source document.
 
 <!-- Underneath, paste the REAL output for each criterion from one of your
      runs — the actual text your system produced, not a description of it.
@@ -207,12 +214,20 @@ There was a clear gap between the two groups, so I kept the relevance cutoff at 
 
 ## Verdicts
 
-<!-- MET or MISSED for each of the five, against the target you wrote last
-     unit — not a new one. Plus a sentence on how you decided. That sentence
-     matters most where it was close.
+**Criterion 1 — MET.**  
+The target was at least 4 of 5 test questions with a retrieved chunk containing the answer. All 5 questions had the answer available in the retrieved material across the runs, so this criterion was met.
 
-     If your target said 4 of 5 and your runs came out 4, 3, 4, that's a MISS.
-     The target has to hold, not show up occasionally.
+**Criterion 2 — MET.**  
+The target was for every answer to name at least one source document. All 5 answers named a source in every run, so this criterion was met.
+
+**Criterion 3 — MET.**  
+The target was for the relevance gate to stop at least 4 of 5 out-of-scope questions. The gate refused all 5 out-of-scope questions, so this criterion was met.
+
+**Criterion 4 — MET.**  
+The target was for at least 4 of 5 sampled chunks to read as complete thoughts with no sentence or word cut off at either end. All 5 sampled chunks met that standard, so this criterion was met.
+
+**Criterion 5 — MET.**  
+The target was for the system to use the correct retrieved information in at least 4 of 5 test questions. All 5 questions produced answers containing the expected fact in every run, so this criterion was met.
 
      Milestone 2. -->
 
@@ -225,30 +240,21 @@ There was a clear gap between the two groups, so I kept the relevance cutoff at 
 | 5 |  |  |  |
 
 ## Diagnoses
+No criteria were missed in the before evaluation, so there was no failure to trace to a specific pipeline stage.
 
-<!-- For each miss: which stage caused it, and how. The stage alone isn't
-     enough — you need the mechanism.
+However, because every criterion passed on the first full evaluation, some of my original targets may have been too safe. The criterion I would tighten is Criterion 1. Instead of requiring the answer to appear somewhere in the retrieved chunks for 4 of 5 questions, I would make the target stricter by requiring the answer to appear within the top three retrieved chunks for at least 4 of 5 questions. This would test retrieval quality more directly instead of only checking whether the answer appeared anywhere in the top five.
 
-     Not a diagnosis: "Question 3 didn't work."
-     A diagnosis:     "Question 3 asks about laundry costs. The answer is in
-                       one sentence that got split across two chunks, so
-                       neither chunk on its own contains it."
 
-     The five stages: loading → chunking → embedding → retrieval → generation.
-
-     Look for a pattern. If three misses all ask about numbers, that's one
-     problem, not three.
-
-     Missed nothing? Say so, then say honestly whether your targets were set
-     low, and which one you'd tighten and to what.
-
-     Milestone 3. -->
+ Milestone 3. -->
 
 ## The Improvement
 
 **What I changed:**
+I added hybrid search to `store.py::search`. The original retrieval used semantic similarity only. I kept semantic similarity as the main signal and added BM25 keyword matching so exact names, numbers, and terms in the question could also influence the ranking.
 
 **Why I picked it:**
+I chose this improvement because several of my questions depend on exact details such as "Kestrelford," "11am," "9pm," and "June." Hybrid search was a reasonable way to test whether combining meaning-based retrieval with keyword matching would improve how the most useful chunks were ranked.
+
 
 <!-- Connect it to a specific diagnosis above in one sentence. If you can't,
      you picked a fix because it sounded impressive. -->
@@ -260,13 +266,18 @@ There was a clear gap between the two groups, so I kept the relevance cutoff at 
 
 | Criterion | Target | Run 1 | Run 2 | Run 3 | Verdict |
 |---|---|---|---|---|---|
-| 1. Retrieved chunk contains the answer | 4 of 5 |  |  |  |  |
-| 2. Every answer names a source | 5 of 5 |  |  |  |  |
-| 3. Gate stops out-of-corpus questions | 4 of 5 |  |  |  |  |
-| 4. | | | | | |
-| 5. | | | | | |
+| 1. Retrieved chunks contain the answer | 4 of 5 | 5/5 | 5/5 | 5/5 | MET |
+| 2. Every answer names a source | 5 of 5 | 5/5 | 5/5 | 5/5 | MET |
+| 3. Gate stops out-of-corpus questions | 4 of 5 | 5/5 | 5/5 | 5/5 | MET |
+| 4. Sampled chunks read as complete thoughts | 4 of 5 | 5/5 | 5/5 | 5/5 | MET |
+| 5. Retrieved information is used in the final answer | 4 of 5 | 5/5 | 5/5 | 5/5 | MET |
 
 **Did it help?**
+The hybrid search did not change the overall criterion scores because all five criteria were already met before the improvement. However, it did change some retrieval rankings and source sets. For example, the exact Kestrelford food chunk ranked first for the pubs and cafés question after hybrid search.
+
+The relevance gate also continued to refuse all 5 out-of-scope questions after the change.
+
+Overall, the improvement did not increase the measured pass rate, but it preserved the existing performance while making exact keyword matches more influential in retrieval.
 
 <!-- Say plainly whether it did, and how you know. If it made things worse,
      say that — a change that backfired, honestly reported, earns full credit
@@ -276,6 +287,11 @@ There was a clear gap between the two groups, so I kept the relevance cutoff at 
      Milestone 4. -->
 
 ## What's Still Broken
+No criterion was still missed after the improvement. All five criteria were met before and after hybrid search.
+
+The main limitation is that my original criteria did not measure retrieval ranking very strictly. A correct chunk could appear anywhere in the retrieved results and still count as a success. Because of that, the hybrid search changed some rankings without changing my criterion scores.
+
+If I continued working on the system, I would test whether the correct answer appears within the top three results instead of anywhere in the top five. I stopped here because Unit 2 asks for one measured improvement, and the hybrid-search change was completed and tested.
 
 <!-- For each criterion still missed after your fix: what you'd do about it,
      and why you stopped where you did.
@@ -286,8 +302,16 @@ There was a clear gap between the two groups, so I kept the relevance cutoff at 
      Milestone 5. -->
 
 ## What I'd Do Differently
+I would make Criterion 1 stricter. Instead of checking whether one of the retrieved chunks contains the answer anywhere in the top five results, I would require the correct answer to appear within the top three results for at least 4 of 5 questions.
+
+My original criterion was useful for checking whether retrieval found the answer at all, but it was not strict enough to measure ranking quality. The hybrid-search experiment made that limitation more obvious.
+
+## How I Used AI section
+In Unit 2, I used AI to help me compare my before-evaluation results against my five acceptance criteria and identify that all five criteria were met. Since there were no failures to diagnose, I used AI to pressure-test which criterion was too safe. That helped me identify Criterion 1 as a weak measure of ranking quality and choose hybrid search as a measured improvement.
 
 <!-- Knowing what you know now — which of your five criteria would you write
      differently, and why?
+
+
 
      Milestone 5. -->
